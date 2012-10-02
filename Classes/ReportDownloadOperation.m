@@ -13,7 +13,6 @@
 #import "RegexKitLite.h"
 #import "NSData+Compression.h"
 #import "NSDictionary+HTTP.h"
-#import "JSONKit.h"
 
 @interface ReportDownloadOperation ()
 
@@ -250,7 +249,7 @@
 		
 		NSString *ittsBaseURL = @"https://itunesconnect.apple.com";
 		NSString *ittsLoginPageAction = @"/WebObjects/iTunesConnect.woa";
-		NSString *signoutSentinel = @"name=\"signOutForm\"";
+		NSString *signoutSentinel = @"Sign Out";
 		
 		NSURL *loginURL = [NSURL URLWithString:[ittsBaseURL stringByAppendingString:ittsLoginPageAction]];
 		NSHTTPURLResponse *loginPageResponse = nil;
@@ -421,7 +420,8 @@
 		graphDataJSON = [graphDataJSON stringByAppendingString:@"}"];
 		graphDataJSON = [graphDataJSON stringByReplacingOccurrencesOfString:@"'" withString:@"\""];
 		NSError *jsonError = nil;
-		NSDictionary *graphDict = [graphDataJSON objectFromJSONStringWithParseOptions:JKParseOptionUnicodeNewlines | JKParseOptionLooseUnicode error:&jsonError];
+		
+		NSDictionary *graphDict = [NSJSONSerialization JSONObjectWithData:[graphDataJSON dataUsingEncoding:NSUTF8StringEncoding] options:0 error:&jsonError];
 		if (graphDict) {
 			NSSet *allExistingPayments = account.payments;
 			NSMutableSet *existingPaymentIdentifiers = [NSMutableSet set];
